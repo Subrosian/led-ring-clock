@@ -2,7 +2,7 @@
 #define PIN 2
 #define NUMPIXELS 12
 
-int hours = 0;
+int hours = 1;
 int minutes = 0;
 int seconds = 0;
 int hoursled = 0;
@@ -13,11 +13,15 @@ unsigned long previousMillis = 0;
 unsigned long currentMillis = 0;
 int leds[ 12 ] ;
 
+String inputString = "";
+bool stringComplete = false;
+
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   pixels.begin();
   Serial.begin(9600);
+  inputString.reserve(200);
 }
 
 void tick() {
@@ -37,7 +41,7 @@ void tick() {
   Serial.print(hours);
   Serial.print(":");
   Serial.print(minutes);
-  Serial.print(": ");
+  Serial.print(":");
   Serial.println(seconds);
 }
 
@@ -51,23 +55,33 @@ void updateclock() {
   minutesled = minutes / 5;
   hoursled = hours;
 
-  pixels.setPixelColor(secondsled, pixels.Color(0, 150, 0));
-  pixels.setPixelColor(minutesled, pixels.Color(150, 0, 0));
-  pixels.setPixelColor(hoursled, pixels.Color(0, 0, 150));
+  pixels.setPixelColor(secondsled, pixels.Color(0, 20, 0));
+  pixels.setPixelColor(minutesled, pixels.Color(20, 0, 0));
+  pixels.setPixelColor(hoursled, pixels.Color(0, 0, 20));
 
   if (secondsled == minutesled) {
-    pixels.setPixelColor(secondsled, pixels.Color(150, 150, 0));
+    pixels.setPixelColor(secondsled, pixels.Color(20, 20, 0));
   }
   if (secondsled == hoursled) {
-    pixels.setPixelColor(secondsled, pixels.Color(0, 150, 150));
+    pixels.setPixelColor(secondsled, pixels.Color(0, 20, 20));
   }
   if (minutesled == hoursled) {
-    pixels.setPixelColor(minutesled, pixels.Color(0, 150, 150));
+    pixels.setPixelColor(minutesled, pixels.Color(0, 20, 20));
   }
   if ((secondsled == minutesled) && (minutesled == hoursled)) {
-    pixels.setPixelColor(secondsled, pixels.Color(150, 150, 150));
+    pixels.setPixelColor(secondsled, pixels.Color(20, 20, 20));
   }
   pixels.show();
+}
+
+void serialEvent() {
+  while (Serial.available()) {
+    char inChar = (char)Serial.read();
+    inputString += inChar;
+    if (inChar == '\n') {
+      stringComplete = true;
+    }
+  }
 }
 
 void loop() {
@@ -76,5 +90,17 @@ void loop() {
     previousMillis = currentMillis;
     tick();
     updateclock();
+  }
+  if (stringComplete) {
+    Serial.println(inputString);
+    if (inputString.startsWith("set")) {
+      hours = inputString.substring(4, 6).toInt();
+      minutes = inputString.substring(7, 9).toInt();
+      seconds = inputString.substring(10, 12).toInt();
+      Serial.println("Time Set");
+    }
+    // clear the string:
+    inputString = "";
+    stringComplete = false;
   }
 }
