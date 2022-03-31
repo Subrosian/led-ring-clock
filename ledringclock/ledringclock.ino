@@ -53,19 +53,19 @@ void updateclock() {
   secondsled = seconds / 5;
   minutesled = minutes / 5;
   hoursled = hours;
-
+  // H S M
   pixels.setPixelColor(secondsled, pixels.Color(0, 20, 0));
-  pixels.setPixelColor(minutesled, pixels.Color(20, 0, 0));
-  pixels.setPixelColor(hoursled, pixels.Color(0, 0, 20));
+  pixels.setPixelColor(minutesled, pixels.Color(0, 0, 20));
+  pixels.setPixelColor(hoursled, pixels.Color(20, 0, 0));
 
   if (secondsled == minutesled) {
-    pixels.setPixelColor(secondsled, pixels.Color(20, 20, 0));
-  }
-  if (secondsled == hoursled) {
     pixels.setPixelColor(secondsled, pixels.Color(0, 20, 20));
   }
+  if (secondsled == hoursled) {
+    pixels.setPixelColor(secondsled, pixels.Color(20, 20, 0));
+  }
   if (minutesled == hoursled) {
-    pixels.setPixelColor(minutesled, pixels.Color(0, 20, 20));
+    pixels.setPixelColor(minutesled, pixels.Color(20, 0, 20));
   }
   if ((secondsled == minutesled) && (minutesled == hoursled)) {
     pixels.setPixelColor(secondsled, pixels.Color(20, 20, 20));
