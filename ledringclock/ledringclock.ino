@@ -52,8 +52,13 @@ void updateclock() {
   pixels.clear();
   secondsled = seconds / 5;
   minutesled = minutes / 5;
-  hoursled = hours;
-  // H S M
+  if (hours == 12) {
+    hoursled = 0;
+  }
+  else {
+    hoursled = hours;
+  }
+
   pixels.setPixelColor(secondsled, pixels.Color(0, 20, 0));
   pixels.setPixelColor(minutesled, pixels.Color(0, 0, 20));
   pixels.setPixelColor(hoursled, pixels.Color(20, 0, 0));
