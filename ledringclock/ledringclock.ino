@@ -1,10 +1,14 @@
 #include <Adafruit_NeoPixel.h>
-#define PIN 1
+#define PIN 2
 #define NUMPIXELS 12
 
 int hours = 0;
 int minutes = 0;
 int seconds = 0;
+int hoursled = 0;
+int minutesled = 0;
+int secondsled = 0;
+
 unsigned long previousMillis = 0;
 unsigned long currentMillis = 0;
 int leds[ 12 ] ;
@@ -43,38 +47,32 @@ void updateclock() {
   }
 
   pixels.clear(); // Set all pixel colors to 'off'
+  secondsled = seconds / 5;
+  minutesled = minutes / 5;
+  hoursled = hours;
 
-  leds[ seconds / 5 ] = 1;
-  leds[ minutes / 5 ] = 2;
-  leds[ hours ] = 3;
+  pixels.setPixelColor(secondsled, pixels.Color(0, 150, 0));
+  pixels.setPixelColor(minutesled, pixels.Color(150, 0, 0));
+  pixels.setPixelColor(hoursled, pixels.Color(0, 0, 150));
 
-  for ( int i = 0; i < 12; ++i ) {
-    Serial.print(leds[ i ]);
-    if (leds[ i ] == 3) {
-        Serial.println("True 3");
-      pixels.setPixelColor(i, pixels.Color(0, 150, 0));
-    }
-    else if (leds[ i ] == 2) {
-      Serial.println("True 2");
-      pixels.setPixelColor(i, pixels.Color(150, 0, 0));
-    }
-    else if (leds[ i ] == 1) {
-      Serial.println("True 1");
-      pixels.setPixelColor(i, pixels.Color(0, 0, 150));
-    }
-    else {
-      Serial.println("False");
-      pixels.setPixelColor(i, pixels.Color(0, 0, 0));
-    }
-    pixels.show();
+  if (secondsled == minutesled) {
+    pixels.setPixelColor(secondsled, pixels.Color(150, 150, 0));
   }
-  Serial.println("");
+  if (secondsled == hoursled) {
+    pixels.setPixelColor(secondsled, pixels.Color(0, 150, 150));
+  }
+  if (minutesled == hoursled) {
+    pixels.setPixelColor(minutesled, pixels.Color(0, 150, 150));
+  }
+  if ((secondsled == minutesled) && (minutesled == hoursled)) {
+    pixels.setPixelColor(secondsled, pixels.Color(150, 150, 150));
+  }
   pixels.show();
 }
 
 void loop() {
   currentMillis = millis();
-  if (currentMillis - previousMillis >= 1) {
+  if (currentMillis - previousMillis >= 1000) {
     previousMillis = currentMillis;
     tick();
     updateclock();
