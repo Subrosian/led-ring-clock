@@ -8,7 +8,6 @@ int seconds = 0;
 int hoursled = 0;
 int minutesled = 0;
 int secondsled = 0;
-
 unsigned long previousMillis = 0;
 unsigned long currentMillis = 0;
 int leds[ 12 ] ;
@@ -50,7 +49,7 @@ void updateclock() {
     leds[ i ] = 0;
   }
 
-  pixels.clear(); // Set all pixel colors to 'off'
+  pixels.clear();
   secondsled = seconds / 5;
   minutesled = minutes / 5;
   hoursled = hours;
@@ -99,7 +98,6 @@ void loop() {
       seconds = inputString.substring(10, 12).toInt();
       Serial.println("Time Set");
     }
-    // clear the string:
     inputString = "";
     stringComplete = false;
   }
